@@ -1,18 +1,25 @@
 <?php
-require_once 'vendor/autoload.php';
-use Symfony\Component\Validator\Constraints\Length;
-use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Validation;
 
-$validator = Validation::createValidator();
-$violations = $validator->validate('Bernhard', [
-    new Length(['min' => 10]),
-    new NotBlank(),
-]);
+require_once __DIR__ . '/user.php';
+require_once __DIR__ . '/comment.php';
 
-if (0 !== count($violations)) {
-    // there are errors, now you can show them
-    foreach ($violations as $violation) {
-        echo $violation->getMessage().'<br>';
+$user1 = new User(0, "Adam", "TestAdam@mail.ru", "12345678");
+$user2 = new User(1, "Alex", "TestAlex@mail.ru", "12345678");
+
+$currentDate = new DateTime();
+
+$user3 = new User(2, "Emilia", "Test@mail.ru", "12345678");
+$user4 = new User(3, "John", "Test@mail.ru", "12345678");
+
+$comments = [
+    new Comment($user1, "Comment from User 1"),
+    new Comment($user2, "Comment from User 2"),
+    new Comment($user3, "Comment from User 3"),
+    new Comment($user4, "Comment from User 4"),
+];
+
+foreach ($comments as $comment) {
+    if ($comment->getUser()->getCreationDate() > $currentDate) {
+        echo $comment->getText(), "<br>";
     }
 }

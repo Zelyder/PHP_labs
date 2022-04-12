@@ -1,81 +1,91 @@
 <?php
 
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\GreaterThan;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validation;
 
-class User {
-    public int $id;
-    public int $name;
-    public int $email;
-    public int $password;
+class User
+{
+    public $id;
+    public $name;
+    public $email;
+    public $password;
+    public $creationDate;
+
+    public function __construct($id, $name, $email, $password)
+    {
+        
+        $validator = Validation::createValidator();
+
+            //Validate id
+            $violations = $validator->validate($id, [
+                new GreaterThan(['value' => -1]),
+                new NotBlank(),
+            ]);
+
+            if (0 !== count($violations)) {
+                // there are errors, now you can show them
+                foreach ($violations as $violation) {
+                    echo "Id error: ".$violation->getMessage().'<br>';
+                }
+            }
+
+            //Validate username
+            $violations = $validator->validate($name, [
+                new Length(['min' => 2]),
+                new NotBlank(),
+            ]);
+
+            if (0 !== count($violations)) {
+                // there are errors, now you can show them
+                foreach ($violations as $violation) {
+                    echo "Name error: ".$violation->getMessage().'<br>';
+                }
+            }
+
+            //Validate email
+            $violations = $validator->validate($email, [
+                new NotBlank(),
+                new Email(),
+            ]);
+
+            if (0 !== count($violations)) {
+                // there are errors, now you can show them
+                foreach ($violations as $violation) {
+                    echo "Email error: ".$violation->getMessage().'<br>';
+                }
+            }
+
+            //Validate password
+            $violations = $validator->validate($password, [
+                new Length(['min' => 8]),
+                new NotBlank(),
+            ]);
+
+            if (0 !== count($violations)) {
+                // there are errors, now you can show them
+                foreach ($violations as $violation) {
+                    echo "Password error: ".$violation->getMessage().'<br>';
+                }
+            }
+        
+
+        $this->id = $id;
+        $this->name = $name;
+        $this->email = $email;
+        $this->password = $password;
+        $this->creationDate = new DateTime();
+
+        
     
-    public function __construst(int $id, string $name, string $email, string $password) {
-        $this->id = validate_id($id);
-        $this->name = validate_name($name);
-        $this->email = validate_email($email);
-        $this->password = validate_password($password);
     }
 
-    private function validate_id($val) {
-        $validator = Validation::createValidator();
-        $violations = $validator->validate($id, [
-            new NotBlank(),
-        ]);
-        if (0 !== count($violations)) {
-            // there are errors, now you can show them
-            foreach ($violations as $violation) {
-                echo $violation->getMessage().'<br>';
-            }
-        }
-        return $val;
-    }
-
-    private function validate_name($val) {
-        $validator = Validation::createValidator();
-        $violations = $validator->validate($id, [
-            new NotBlank(),
-            new Length(['min' <= 2]),
-            new Length(['max' >= 100]),
-        ]);
-        if (0 !== count($violations)) {
-            // there are errors, now you can show them
-            foreach ($violations as $violation) {
-                echo $violation->getMessage().'<br>';
-            }
-        }
-        return $val;
-    }
-
-    private function validate_email($val) {
-        $validator = Validation::createValidator();
-        $violations = $validator->validate($id, [
-            new NotBlank(),
-            new Email(),
-        ]);
-        if (0 !== count($violations)) {
-            // there are errors, now you can show them
-            foreach ($violations as $violation) {
-                echo $violation->getMessage().'<br>';
-            }
-        }
-        return $val;
-    }
-
-    private function validate_password($val) {
-        $validator = Validation::createValidator();
-        $violations = $validator->validate($id, [
-            new NotBlank(),
-            new Length(['min' <= 2]),
-        ]);
-        if (0 !== count($violations)) {
-            // there are errors, now you can show them
-            foreach ($violations as $violation) {
-                echo $violation->getMessage().'<br>';
-            }
-        }
-        return $val;
+    public function getCreationDate()
+    {
+        return $this->creationDate;
     }
 }
-
