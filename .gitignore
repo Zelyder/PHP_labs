@@ -1,3 +1,7 @@
 /vendor/
 /.idea/
 /.vscode/
+/tools/
+error
+.php-cs-fixer.php
+u8191120-lab.local
